@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}E-Neo: Blog{% end %}
+
+{% block nav %}
+<ul class="nav navbar-nav">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blogs">Blogs</a></li>
+  <li><a href="/tweets">Tweets</a></li>
+  <li><a href="https://github.com/E-Neo">Github</a></li>
+</ul>
+{% end %}
+
+{% block body %}
+  <div id="loading" class="container text-center">
+    <h2>Loading...</h2>
+  </div>
+  <div id="show">
+    <div id="{{ slug }}"></div>
+  </div>
+{% end %}
+
+{% block script %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+<script>
+  $(document).ready(function () {
+    var slug = $("#show div:first-child").attr("id");
+    $.getJSON("/api/blog/" + slug, function (data) {
+      $("#loading").hide();
+      $("#show div:first-child")
+        .append('<h1>' + data[slug][1] + '</h1>'
+                + '<p>' + data[slug][3] + '</p>'
+                + marked(data[slug][2]));
+    })
+      .fail(function () {
+        $("#loading").hide();
+        $("#show div:first-child")
+          .append('<h1 class="text-center">404</h1>');
+      });
+  });
+</script>
+{% end %}

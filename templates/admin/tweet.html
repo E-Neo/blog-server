@@ -1,0 +1,124 @@
+{% extends "../base.html" %}
+
+{% block title %}Admin: Tweets{% end %}
+
+{% block nav %}
+<ul class="nav navbar-nav">
+  <li><a href="/admin/">Admin</a></li>
+  <li><a href="/admin/blogs">Blogs</a></li>
+  <li class="active"><a href="#">Tweets</a></li>
+</ul>
+<ul class="nav navbar-nav navbar-right">
+  <li><a href="/logout">Sign out</a></li>
+</ul>
+{% end %}
+
+{% block body %}
+<div id="new">
+  <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#newTweet">
+    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+  </button>
+  <div id="newTweet" class="collapse">
+    <form class="form-group" method="post">
+      <label for="inputArea">Tweet:</label>
+      <input type="hidden" name="type" value="new" />
+      <textarea name="markdown" class="form-control" rows="5" id="inputArea"></textarea>
+      <button class="btn btn-default" type="submit">Publish</button>
+    </form>
+  </div>
+</div>
+<div id="edit" class="hidden">
+  <form class="form-group">
+    <textarea class="form-control" rows="5"></textarea>
+    <button type="button" id="edit-publish" class="btn btn-default">Publish</button>
+    <button type="button" id="edit-cancle" class="btn btn-default">Cancle</button>
+  </form>
+</div>
+<div id="show" class="list-group"></div>
+<div id="loading" class="container text-center">
+  <h2>Loading...</h2>
+</div>
+<div id="more"></div>
+{% end %}
+
+{% block script %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+<script>
+  $(document).ready(function () {
+    var update_tweets = function (date_string) {
+      $("#more").empty();
+      $.post("/api/tweets", {
+        current: date_string
+      }, function (data) {
+        var slugs = [];
+        for (var key in data) {
+          slugs.push(key);
+        }
+        slugs = slugs.sort();
+        var current = false;
+        if (slugs.length > 0) {
+          current = data[slugs[0]][2];
+        }
+        $("#loading").hide();
+        slugs.reverse().forEach(function (x) {
+          $("#show").append('<div id="' + x
+                            + '"><div class="dropdown"><small class="dropdown-toggle" '
+                            + 'id="menu" data-toggle="dropdown" aria-haspopup="true" '
+                            + 'aria-expanded="true">' + data[x][2]
+                            + '<span class="caret"></span></small>'
+                            + '<ul class="dropdown-menu" aria-labelledby="menu">'
+                            + '<li><a class="neo-edit">Edit</a></li>'
+                            + '<li role="separator" class="divider"></li>'
+                            + '<li><a class="neo-delete">Delete</a></li></ul>'
+                            + '</div><div class="list-group-item">'
+                            + marked(data[x][1]) + '</div></div>');
+        });
+        $(".neo-delete").click(function () {
+          $("#new").fadeOut(3000);
+          $("#show").fadeOut(3000);
+          var slug = $($(this).parentsUntil("#show")[3]).attr("id");
+          $.post("/admin/tweets", {
+            type: "delete",
+            slug: slug
+          }, function () {
+            window.location.replace("/admin/tweets");
+          });
+        });
+        $(".neo-edit").click(function () {
+          $("#new").hide();
+          $("#show").hide();
+          $("#more").hide();
+          var slug = $($(this).parentsUntil("#show")[3]).attr("id");
+          $("#edit").find("textarea").val(data[slug][1]);
+          $("#edit").removeClass("hidden");
+          $("#edit-publish").click(function () {
+            $.post("/admin/tweets", {
+              type: "edit",
+              slug: slug,
+              markdown: $("#edit").find("textarea").val()
+            }, function () {
+              window.location.replace("/admin/tweets");
+            });
+          });
+        });
+        $("#edit-cancle").click(function () {
+          $("#edit").addClass("hidden");
+          $("#new").show();
+          $("#show").show();
+          $("#more").show();
+        });
+        if (current) {
+          $("#more").append('<button type="button" class="btn btn-default center-block">More</button>');
+          $("#more button").click(function () {
+            $("#loading").show();
+            update_tweets(current);
+          });
+        } else {
+          $("#more").append('<p class="text-center">--- I am the bottom line. ---</p>');
+        }
+      }, "json");
+    }
+    update_tweets(new Date().toISOString());
+  });
+</script>
+{% end %}
