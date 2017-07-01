@@ -1,1 +1,1 @@
-web: python main.py --port=$PORT
+web: gunicorn zone.wsgi --log-file -
