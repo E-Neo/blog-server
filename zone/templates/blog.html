@@ -27,7 +27,7 @@
       $.getJSON("/api/blog/" + query_str, function (data) {
         let time_before = false;
         if (data.length > 0) {
-          time_before = data[data.length-1].publish_time;
+          time_before = data[data.length-1].publish_time.replace('+', '%2B');
         }
         $("#loading").hide();
         data.forEach(function (x) {

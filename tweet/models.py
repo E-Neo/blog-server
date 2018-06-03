@@ -9,7 +9,7 @@ class Tweet(models.Model):
     content = models.CharField(max_length=512)
 
     def __str__(self):
-        return str(self.id)
+        return self.id
 
     class Meta:
         ordering = ['-publish_time']

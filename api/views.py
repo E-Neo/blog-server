@@ -30,7 +30,7 @@ class APIBlog(APIView):
                 queryset = queryset.order_by('-publish_time')[:10]
                 serializer = APIBlogSerializer(queryset, many=True)
                 return Response(serializer.data)
-        except:
+        except Exception as e:
             return Response(status=400)
 
 
@@ -46,7 +46,7 @@ class APIBlogDetail(APIView):
             queryset = Blog.objects.get(id=id)
             serializer = APIBlogDetailSerializer(queryset)
             return Response(serializer.data)
-        except:
+        except Exception as e:
             return Response(status=404)
 
 
@@ -69,5 +69,5 @@ class APITweet(APIView):
                 queryset = queryset.order_by('-publish_time')[:10]
                 serializer = APITweetSerializer(queryset, many=True)
                 return Response(serializer.data)
-        except:
+        except Exception as e:
             return Response(status=400)

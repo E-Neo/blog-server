@@ -10,7 +10,7 @@ class Blog(models.Model):
     content = models.TextField()
 
     def __str__(self):
-        return str(self.id)
+        return self.id
 
     class Meta:
         ordering = ['-publish_time']

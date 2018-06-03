@@ -4,4 +4,4 @@ from .models import Tweet
 
 @admin.register(Tweet)
 class TweetAdmin(admin.ModelAdmin):
-    list_display = ('id', 'publish_time', 'content')
+    list_display = ('content', 'publish_time')

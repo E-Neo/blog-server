@@ -6,6 +6,9 @@ def home(request):
     try:
         page = Page.objects.get(name='home')
         content = page.content
+        script = page.script
     except:
         content = ''
-    return render(request, 'home.html', {'content': content})
+        script = ''
+    return render(request, 'home.html',
+                  {'content': content, 'script': script})

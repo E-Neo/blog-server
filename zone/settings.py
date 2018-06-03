@@ -1,5 +1,4 @@
 import os
-import json
 import dj_database_url
 from pathlib import Path
 
@@ -16,17 +15,8 @@ data_dir_key = 'DJANGOPROJECT_DATA_DIR'
 DATA_DIR = Path(os.environ[data_dir_key]) if data_dir_key in os.environ \
            else BASE_DIR.parent
 
-try:
-    with DATA_DIR.joinpath('conf', 'secrets.json').open() as handle:
-        SECRETS = json.load(handle)
-except IOError:
-    try:
-        secret_key = os.environ['SECRET_KEY']
-        SECRETS = {'secret_key': secret_key}
-    except KeyError:
-        SECRETS = {'secret_key': 'a'}
-
-
+secret_key = os.environ['SECRET_KEY']
+SECRETS = {'secret_key': secret_key}
 SECRET_KEY = str(SECRETS['secret_key'])
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -96,7 +86,7 @@ WSGI_APPLICATION = 'zone.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'zone',
         'USER': 'e-neo',
         'HOST': SECRETS.get('db_host', ''),
