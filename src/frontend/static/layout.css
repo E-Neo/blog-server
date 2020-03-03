@@ -1,0 +1,47 @@
+.list-group {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-group-item {
+  border: 1px solid #ddd;
+  margin-top: -1px;
+  background-color: #f6f6f6;
+  padding: 12px;
+}
+
+.navbar {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #333;
+}
+
+.nav-item {
+    display: block;
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.active {
+    background: #4a5;
+}
+
+.main {
+    margin: 10px auto 10px;
+}
+
+.btn {
+    margin: 5px auto 5px;
+    display: block;
+    padding: 8px 10px;
+}
+
+.footer {
+    text-align: center;
+    border-top: 2px solid;
+}

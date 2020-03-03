@@ -1,1 +1,2 @@
-web: gunicorn zone.wsgi --log-file -
+release: ./target/release/diesel migration run
+web: ./target/release/api
